@@ -1,76 +1,76 @@
+/**
+ * Dijkstra single source sortest path algorithm
+ * */
+
 #include <bits/stdc++.h>
 
 using namespace std;
 
-const int numberOfVertex=10;
+int n=10;
 
-int minimumDistance( int distance[], bool visited[])
+int graph[10][10] = {{0, 14, 0, 7, 0, 0, 0, 8, 0, 10},
+                   {14, 0, 8, 0, 0, 0, 0, 11, 0, 0},
+                   {0, 8, 0, 7, 0, 4, 0, 0, 2, 0},
+                   {7, 0, 7, 0, 9, 12, 0, 0, 0, 5},
+                   {0, 0, 0, 9, 0, 0, 0, 0, 0, 0},
+                   {0, 0, 4, 0, 0, 0, 2, 0, 0, 11},
+                   {0, 0, 0, 12, 0, 2, 0, 1, 6, 15},
+                   {8, 11, 0, 0, 0, 0, 1, 0, 7, 0},
+                   {0, 0, 2, 0, 0, 0, 6, 7, 0, 0},
+                   {10, 0, 0, 5, 0, 11, 15, 0, 0, 0}};
+                   
+bool visited[15];
+int dis_tance[15];
+
+class cmp{
+	// pair<nodeNumber,distanceFromSource>
+	public:
+	bool operator () (const pair<int,int> a, const pair<int,int> b)
+	{
+		return a.second>b.second;
+	}
+};
+
+void dj(int source)
 {
-    int minimum=INT_MAX;
-    int minimumPos=0;
-
-    for(int v=0;v<numberOfVertex;v++)
-    {
-        if(!visited[v] && distance[v]<=minimum)
-        {
-            minimum=distance[v];
-            minimumPos=v;
-        }
-    }
-
-    return minimumPos;
+	int node;
+	
+	for(int i=0;i<n;i++) dis_tance[i]=100000000;
+	
+	dis_tance[source]=0;
+	
+	priority_queue<pair<int,int>,vector<pair<int,int>>,cmp> pq;
+	pq.push({source,0});
+	
+	while(!pq.empty())
+	{
+		node=pq.top().first;
+		
+		pq.pop();
+		
+		if(visited[node]) continue;
+		visited[node]=true;
+		
+		for(int i=0;i<n;i++)
+		{
+			if(graph[node][i])
+			{
+				if(dis_tance[i]>dis_tance[node]+graph[node][i])
+				{
+					dis_tance[i]=dis_tance[node]+graph[node][i];
+					pq.push({i,dis_tance[i]});
+				}
+			}
+		}
+	}
 }
 
-void dj(int mat[numberOfVertex][numberOfVertex], int source)
-{
-    int distance[numberOfVertex];
-    bool visited[numberOfVertex];
 
-    for(int i=0;i<numberOfVertex;i++)
-    {
-        distance[i]=INT_MAX;
-        visited[i]=false;
-    }
-
-    distance[source]=0;
-
-    for(int i=0;i<numberOfVertex-1;i++)
-    {
-        int u=minimumDistance(distance,visited);
-        visited[u]=true;
-        for(int v=0;v<numberOfVertex;v++)
-        {
-            if(!visited[v] && mat[u][v] !=0 && distance[u]!=INT_MAX && distance[u]+mat[u][v]<distance[v])
-            {
-                distance[v]=distance[u]+mat[u][v];
-            }
-        }
-    }
-
-    cout << "Distance from source " << source << " to each vertex:" << endl;
-    cout << "Vertex\tDistance" << endl;
-    for(int i=0;i<numberOfVertex;i++)
-    {
-        cout << i << "\t" << distance[i] << endl;
-    }
-}
-
-int main()
-{
-
-    int graph[numberOfVertex][numberOfVertex] = {{0, 14, 0, 7, 0, 0, 0, 8, 0, 10},
-                                             {14, 0, 8, 0, 0, 0, 0, 11, 0, 0},
-                                             {0, 8, 0, 7, 0, 4, 0, 0, 2, 0},
-                                             {7, 0, 7, 0, 9, 12, 0, 0, 0, 5},
-                                             {0, 0, 0, 9, 0, 0, 0, 0, 0, 0},
-                                             {0, 0, 4, 0, 0, 0, 2, 0, 0, 11},
-                                             {0, 0, 0, 12, 0, 2, 0, 1, 6, 15},
-                                             {8, 11, 0, 0, 0, 0, 1, 0, 7, 0},
-                                             {0, 0, 2, 0, 0, 0, 6, 7, 0, 0},
-                                             {10, 0, 0, 5, 0, 11, 15, 0, 0, 0}};
-
-    dj(graph, 9);
-
-    return 0;
-}
-
+int main() 
+{ 
+	dj(0);
+	
+	for(int i=0;i<n;i++) cout << dis_tance[i] << " ";
+	
+	return 0;
+} 
