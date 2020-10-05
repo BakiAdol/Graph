@@ -1,10 +1,10 @@
 /**
- * SCC(Strongly Connected Component)
+ * SCC(Strongly Connected Component) using Kosarajus Algorithm
  * Step 1: visit all node
  * Step 2 : reverse all edges
  * Step 3: visi all node
  * 
- * Algorithm idea : if some node are scc and then if you reverse all edges of those nodes 
+ * Key idea : if some node are scc and then if you reverse all edges of those nodes 
  *                  then they are still scc.
  * 
  * */
