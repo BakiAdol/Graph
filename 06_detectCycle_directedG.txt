@@ -1,0 +1,7 @@
+In a directed graph, we can detect there is a cycle or not in this graph using Kosarajus SCC algorithm.
+
+Kosarajus SCC algorithm returns cycles list in a graph. Suppose there are 5 nodes 1 to 5 and Kosarajus algorithm returns
+1,2,3 and 4 and 5. that means there are three cycles 1,2,3 next cycle 4 and then 5.
+
+If we apply Kosarajus algorithm in our directed graph then if this algorithm return 5(n) list each list contains one node
+that means there are no cycle in this graph otherwise there is at least one cycle.
