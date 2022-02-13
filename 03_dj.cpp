@@ -1,76 +1,71 @@
 /**
- * Dijkstra single source sortest path algorithm
- * */
-
+ * Dijkstra shortest path algorithm
+ * Complexity:
+ * extract min need O(V logV)
+ * Relaxing time O(E logV)
+ * so complexity O(E logV)
+ */
 #include <bits/stdc++.h>
 
 using namespace std;
-
-int n=10;
-
-int graph[10][10] = {{0, 14, 0, 7, 0, 0, 0, 8, 0, 10},
-                   {14, 0, 8, 0, 0, 0, 0, 11, 0, 0},
-                   {0, 8, 0, 7, 0, 4, 0, 0, 2, 0},
-                   {7, 0, 7, 0, 9, 12, 0, 0, 0, 5},
-                   {0, 0, 0, 9, 0, 0, 0, 0, 0, 0},
-                   {0, 0, 4, 0, 0, 0, 2, 0, 0, 11},
-                   {0, 0, 0, 12, 0, 2, 0, 1, 6, 15},
-                   {8, 11, 0, 0, 0, 0, 1, 0, 7, 0},
-                   {0, 0, 2, 0, 0, 0, 6, 7, 0, 0},
-                   {10, 0, 0, 5, 0, 11, 15, 0, 0, 0}};
-                   
-bool visited[15];
-int dis_tance[15];
-
-class cmp{
-	// pair<nodeNumber,distanceFromSource>
-	public:
-	bool operator () (const pair<int,int> a, const pair<int,int> b)
-	{
-		return a.second>b.second;
-	}
-};
-
-void dj(int source)
+// graph.first = node, graph.second = edge value
+vector<int> shortestPathUsingDijkstra(vector<pair<int,int>> graph[8], int root, int nodes)
 {
-	int node;
-	
-	for(int i=0;i<n;i++) dis_tance[i]=100000000;
-	
-	dis_tance[source]=0;
-	
-	priority_queue<pair<int,int>,vector<pair<int,int>>,cmp> pq;
-	pq.push({source,0});
-	
-	while(!pq.empty())
-	{
-		node=pq.top().first;
-		
-		pq.pop();
-		
-		if(visited[node]) continue;
-		visited[node]=true;
-		
-		for(int i=0;i<n;i++)
-		{
-			if(graph[node][i])
-			{
-				if(dis_tance[i]>dis_tance[node]+graph[node][i])
-				{
-					dis_tance[i]=dis_tance[node]+graph[node][i];
-					pq.push({i,dis_tance[i]});
-				}
-			}
-		}
-	}
+    vector<int> shortestDistance(nodes,INT_MAX);
+    vector<bool> visited(nodes,0);
+    // edge value, node
+    auto cmp = [](auto &a,  auto &b){
+        return a.first>b.first;
+    };
+    priority_queue<pair<int,int>,vector<pair<int,int>>, decltype(cmp)> pq(cmp);
+    pq.push({0,root});
+    visited[root] = true;
+
+    while(!pq.empty())
+    {
+        int parent = pq.top().second;
+        int minDis = pq.top().first;
+
+        if(visited[parent]) pq.pop();
+        else visited[parent] = true;
+
+        for(auto &child: graph[parent])
+        {
+            if(shortestDistance[child.first] > child.second+minDis)
+            {
+                shortestDistance[child.first] = child.second+minDis;
+                pq.push({shortestDistance[child.first],child.first});
+            }
+        }
+    }
+
+    return shortestDistance;
 }
 
+int main()
+{
+    int node=7, parent=1;
+    vector<pair<int,int>> graph[8];
 
-int main() 
-{ 
-	dj(0);
-	
-	for(int i=0;i<n;i++) cout << dis_tance[i] << " ";
-	
-	return 0;
-} 
+    graph[1].push_back({2,1});
+    graph[1].push_back({3,5});
+    graph[2].push_back({3,2});
+    graph[2].push_back({4,2});
+    graph[2].push_back({5,1});
+    graph[3].push_back({5,2});
+    graph[4].push_back({5,3});
+    graph[4].push_back({6,1});
+    graph[5].push_back({6,2});
+
+
+    vector<int> dist = shortestPathUsingDijkstra(graph,parent,node);
+
+    cout << "Shortest path from: " << endl;
+    for(int i=1;i<7;i++)
+    {
+        if(i==parent) continue;
+        cout << parent << " to " << i << " = " << dist[i] << endl;
+    }
+
+    return 0;
+}
